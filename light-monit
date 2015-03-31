@@ -11,20 +11,33 @@ notifiers_folder=$config_folder/notifiers.d
 checks_folder=$config_folder/checks.d
 state_folder=/var/lib/light-monit
 
+[ -f $config_folder/light-monit.conf ] && source $config_folder/light-monit.conf
+
 # ensure the state folder exists
 mkdir -p $state_folder
 
 # for each process to monitor
+echo "Loading processes to check from $processes_folder"
 find $processes_folder -type f -iname "check-*" -print0 | while IFS= read -r -d $'\0' process; do
-  check=check-constant
-  notifiers=()
-  notifiers[99]=syslog
-  source $process
+  
+  # load configuration for the process check
   process_name=`basename $process`
   state_file=$state_folder/$process_name.state
+  echo "checking $process_name"
+  check="this-check-does-not-exists"
+  notifiers=()
+  notifiers[99]=syslog
+  [ -f $config_folder/check-default.conf ] && source $config_folder/check-default.conf
+  source $process
+  
   last_known_state=unknown
   [ -f $state_file ] && last_known_state=`cat $state_file`
-  new_state=`bash $checks_folder/$check`
+  
+  new_state=invalid-check-command
+  set - $check; check_command=$1;
+  [ -f $checks_folder/$check_command ] && new_state=`bash $checks_folder/$check`
+  
+  
   if [ "$new_state" != "$last_known_state" ]; then
     for notifier in "${notifiers[@]}"; do
       bash $notifiers_folder/$notifier $process_name $last_known_state $new_state

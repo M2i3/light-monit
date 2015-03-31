@@ -1,1 +1,0 @@
-check="check-pid-file-alive /var/run/ntpd.pid"
