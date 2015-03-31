@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# light-monit - A very light monitoring framework
+# Copyright (c) 2015 M2i3
+#
+set -e
+
+config_folder=${1:-'/etc/light-monit'}
+processes_folder=$config_folder/processes.d
+notifiers_folder=$config_folder/notifiers.d
+checks_folder=$config_folder/checks.d
+state_folder=/var/lib/light-monit
+
+# ensure the state folder exists
+mkdir -p $state_folder
+
+# for each process to monitor
+find $processes_folder -type f -iname "check-*" -print0 | while IFS= read -r -d $'\0' process; do
+  check=check-constant
+  notifiers=()
+  notifiers[99]=syslog
+  source $process
+  process_name=`basename $process`
+  state_file=$state_folder/$process_name.state
+  last_known_state=unknown
+  [ -f $state_file ] && last_known_state=`cat $state_file`
+  new_state=`bash $checks_folder/$check`
+  if [ "$new_state" != "$last_known_state" ]; then
+    for notifier in "${notifiers[@]}"; do
+      bash $notifiers_folder/$notifier $process_name $last_known_state $new_state
+    done
+  fi 
+  # record last state
+  echo $new_state > $state_file
+done

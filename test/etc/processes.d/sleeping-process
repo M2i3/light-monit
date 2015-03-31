@@ -1,0 +1,1 @@
+check="check-pid-file-alive /var/run/this-process-des-not-exists.pid"

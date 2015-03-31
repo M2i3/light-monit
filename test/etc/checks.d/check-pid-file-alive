@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Using a PID file check if the process is alive
+#
+pid_file=$1
+state=unknown
+if [ -f $pid_file ]; then
+  pid=`cat $pid_file`
+  ps -p $pid > /dev/null
+  if [ $? -eq 0 ]; then
+    state=alive
+  else
+    state=dead
+  fi
+else
+  state=not-running
+fi
+
+echo $state
