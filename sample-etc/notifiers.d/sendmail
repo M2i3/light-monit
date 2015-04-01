@@ -37,6 +37,6 @@ sed -i "s/%PROCESS_NAME%/$process_name/g" $temp_email
 sed -i "s/%LAST_KNOWN_STATE%/$last_known_state/g" $temp_email
 sed -i "s/%NEW_STATE%/$new_state/g" $temp_email
 
-cat $temp_email
+sendmail $sendmail_to < $temp_email
 
 rm $temp_email
