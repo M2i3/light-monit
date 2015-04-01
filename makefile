@@ -53,6 +53,8 @@ check-prequisite:
 	@echo "1" > /tmp/testing-alive.pid
 	@rm -rf /var/lib/light-monit/*
 	cp ./test/etc/processes.d/* $(processes_folder)/ 
+	cp $(config_folder)/light-monit.conf.sample $(config_folder)/light-monit.conf
+	cp $(config_folder)/check-default.conf.sample $(config_folder)/check-default.conf
 
 	@echo "running a first time, should return from unknown TO alive, dead, not-running and invalid-check-command"
 	light-monit

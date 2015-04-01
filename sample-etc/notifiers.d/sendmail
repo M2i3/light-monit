@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Send the notification the local sendmail utility
+#
+
+function log_and_exit { 
+  echo $1
+  logger -i -t light-monit $1
+  exit 123
+} 
+
+command -v sendmail >/dev/null 2>&1 || log_and_exit "Trying to the send an email without the sendmail program."
+[ -z "$sendmail_to" ] && log_and_exit "Trying to utilize the sendmail program withtout a recipient" 
+
+temp_email=$(mktemp /tmp/light-monit-email.XXXXXXXXXXXXXXXXX)
+
+
+
+cat << EOF > $temp_email
+
+Subject: %HOSTNAME% - %PROCESS_NAME% went from %LAST_KNOWN_STATE% to %NEW_STATE%
+
+Hello,
+
+Just to advise you that the %PROCESS_NAME% on the host %HOSTNAME% just went from %LAST_KNOWN_STATE% do %NEW_STATE%
+
+Regards,
+
+--
+Light Monit
+
+
+EOF
+
+sed -i "s/%HOSTNAME%/$HOSTNAME/g" $temp_email
+sed -i "s/%PROCESS_NAME%/$process_name/g" $temp_email
+sed -i "s/%LAST_KNOWN_STATE%/$last_known_state/g" $temp_email
+sed -i "s/%NEW_STATE%/$new_state/g" $temp_email
+
+cat $temp_email
+
+rm $temp_email
