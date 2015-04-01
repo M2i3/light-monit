@@ -17,7 +17,6 @@ temp_email=$(mktemp /tmp/light-monit-email.XXXXXXXXXXXXXXXXX)
 
 
 cat << EOF > $temp_email
-
 Subject: %HOSTNAME% - %PROCESS_NAME% went from %LAST_KNOWN_STATE% to %NEW_STATE%
 
 Hello,
