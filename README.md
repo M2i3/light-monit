@@ -14,7 +14,11 @@ The utility is triggered through CRON, preferably every 1 minutes. So add the fo
 
 All configuration takes place in the /etc/light-monit folder
 
-In there you will find three sub-folders
+In there you will find three sub-folders and two configuration files
+
+**light-monit.conf** The default location for the state files
+
+**check-default.conf** The default settings for the processes check
 
 **./notifiers.d/** The list of notifiers currently configured and available. These are bash script to send the notifications. One is predefined to add the entries to the syslog.
 
