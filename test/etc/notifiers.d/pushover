@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Send the notification through pushover
+#
+
+function log_and_exit { 
+  echo $1
+  logger -i -t light-monit $1
+  exit 123
+} 
+
+command -v curl >/dev/null 2>&1 || log_and_exit "Trying to the Pushover API without the curl program."
+[ -z "$pushover_token" ] && log_and_exit "Trying to utilize the Pushover API without a TOKEN." 
+[ -z "$pushover_user" ] && log_and_exit "Trying to utilize the Pushover API without a USER."
+
+
+title="$process_name+went+from+$last_known_state+to+$new_state"
+message=$title
+
+curl --data "token=$pushover_token&user=$pushover_user&title=$title&message=$message" https://api.pushover.net/1/messages.json >/dev/null 2>&1
