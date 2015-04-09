@@ -21,7 +21,7 @@ Subject: %HOSTNAME% - %PROCESS_NAME% went from %LAST_KNOWN_STATE% to %NEW_STATE%
 
 Hello,
 
-Just to advise you that the %PROCESS_NAME% on the host %HOSTNAME% just went from %LAST_KNOWN_STATE% do %NEW_STATE%
+Just to advise you that the %PROCESS_NAME% on the host %HOSTNAME% just went from %LAST_KNOWN_STATE% to %NEW_STATE%
 
 Regards,
 

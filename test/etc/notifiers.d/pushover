@@ -14,7 +14,7 @@ command -v curl >/dev/null 2>&1 || log_and_exit "Trying to the Pushover API with
 [ -z "$pushover_user" ] && log_and_exit "Trying to utilize the Pushover API without a USER."
 
 
-title="$process_name+went+from+$last_known_state+to+$new_state"
-message=$title
+title="$HOSTNAME+-+$process_name+state+change"
+message="$process_name+went+from+$last_known_state+to+$new_state"
 
 curl --data "token=$pushover_token&user=$pushover_user&title=$title&message=$message" https://api.pushover.net/1/messages.json >/dev/null 2>&1
